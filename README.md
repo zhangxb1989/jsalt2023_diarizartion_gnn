@@ -113,4 +113,12 @@ bash scripts/test_inat_train_on_resampled_1_in_6_per_class.sh
 |                 Fb |                           0.706 |                           0.810 |                           0.352 |
 |                NMI |                           0.810 |                           0.953 |                           0.764 |
 * The results might fluctuate a little due to the randomness introduced by gpu knn building using faiss-gpu.
+* Hannah
+
+* IMDB
+![image](https://github.com/zhangxb1989/jsalt2023_diarization_gnn/assets/3263233/ffa37af7-a99c-4d18-b370-5b602cf4b2c4)
+
+* iNat2018-Test
+![image](https://github.com/zhangxb1989/jsalt2023_diarization_gnn/assets/3263233/f61066b2-4259-48b9-99ca-9fd2513ae17f)
+  
 
