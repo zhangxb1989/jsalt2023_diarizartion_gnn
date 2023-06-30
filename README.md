@@ -114,6 +114,7 @@ bash scripts/test_inat_train_on_resampled_1_in_6_per_class.sh
 |                NMI |                           0.810 |                           0.953 |                           0.764 |
 * The results might fluctuate a little due to the randomness introduced by gpu knn building using faiss-gpu.
 * Hannah
+![image](https://github.com/zhangxb1989/jsalt2023_diarization_gnn/assets/3263233/4ffc8fcb-d717-42d0-a51b-fc5abf6d9d75)
 
 * IMDB
 ![image](https://github.com/zhangxb1989/jsalt2023_diarization_gnn/assets/3263233/ffa37af7-a99c-4d18-b370-5b602cf4b2c4)
