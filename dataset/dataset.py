@@ -40,7 +40,8 @@ class LanderDataset(object):
             cluster_features = features
         global_num_nodes = features.shape[0]
         global_edges = ([], [])
-        global_peaks = np.array([], dtype=np.long)
+        #global_peaks = np.array([], dtype=np.long)
+        global_peaks = np.array([], dtype=int)
         ids = np.arange(global_num_nodes)
 
         # Recursive graph construction

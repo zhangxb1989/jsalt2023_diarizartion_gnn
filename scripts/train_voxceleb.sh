@@ -1,1 +1,1 @@
-python train_subg.py --data_path data/VoxCeleb/voxceleb.pkl --model_filename checkpoint/voxceleb_sampler.pth --knn_k 10,5,3 --levels 2,3,4 --faiss_gpu --hidden 256 --epochs 250 --lr 0.01 --batch_size 4096 --num_conv 1 --balance --use_cluster_feat
+python train_subg.py --data_path data/VoxCeleb/voxceleb_train.pkl --model_filename checkpoint/voxceleb_sampler5.pth --knn_k 60,10,5 --levels 2,3 --faiss_gpu --hidden 256 --epochs 100 --lr 0.01 --batch_size 4096 --num_conv 1 --balance  --gat

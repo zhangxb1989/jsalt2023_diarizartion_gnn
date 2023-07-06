@@ -60,9 +60,9 @@ else:
 with open(args.data_path, "rb") as f:
     features, labels = pickle.load(f)
 
-k_list = [int(k) for k in args.knn_k.split(",")] # knn [10, 5, 3]
+k_list = [int(k) for k in args.knn_k.split(",")]  # knn [10, 5, 3]
 
-lvl_list = [int(l) for l in args.levels.split(",")] # levels [2, 3, 4]
+lvl_list = [int(l) for l in args.levels.split(",")]  # levels [2, 3, 4]
 
 gs = []
 nbrs = []
@@ -75,22 +75,14 @@ for k, l in zip(k_list, lvl_list):
         levels=l,
         faiss_gpu=args.faiss_gpu,
     )
-    gs += [g for g in dataset.gs]  #graph
+    gs += [g for g in dataset.gs]  # graph
     ks += [k for g in dataset.gs]
-    nbrs += [nbr for nbr in dataset.nbrs]
-    # print("gs:")
-    # print(gs)
-    # print("ks:")
-    # print(ks)
-    # print("nbrs:")
-    # print(nbrs)
-    # print("k:")
-    # print(k)
-    # print("l:")
-    # print(l)
+    nbrs += [nbr for nbr in dataset.nbrs]  # neighbours
 
 print("Dataset Prepared.")
-#exit()  ## for debug
+
+
+# exit()  ## for debug
 
 
 def set_train_sampler_loader(g, k):
