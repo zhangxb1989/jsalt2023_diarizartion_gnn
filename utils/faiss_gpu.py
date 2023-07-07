@@ -23,6 +23,7 @@ class faiss_index_wrapper:
     ):
         self._res_list = []
 
+       # faiss.reset_gpu_memory_buffers() # 释放GPU内存资源，解决连续调用faiss出错的bug
         num_gpu = faiss.get_num_gpus()
         print("[faiss gpu] #GPU: {}".format(num_gpu))
 
