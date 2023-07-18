@@ -10,7 +10,7 @@ import torch
 import torch.optim as optim
 from dataset import LanderDataset
 from models import LANDER
-from utils import build_next_level, decode, evaluation, stop_iterating
+from utils import build_next_level, decode, evaluation, stop_iterating, write_pred_rttm
 
 ###########
 # ArgParser
@@ -114,6 +114,7 @@ num_edges_add_last_level = np.Inf
 ##################################
 # Predict connectivity and density
 for level in range(args.levels):
+    print("level: ", level)
     if not args.use_gt:
         total_batches = len(test_loader)
         for batch, minibatch in enumerate(test_loader):
@@ -183,7 +184,9 @@ for level in range(args.levels):
         faiss_gpu=False,
         cluster_features=cluster_features,
     )
+    #print("dataset", len(dataset.gs))
     g = dataset.gs[0]
+    #print("g----", g)
     g.ndata["pred_den"] = torch.zeros((g.num_nodes()))
     g.edata["prob_conn"] = torch.zeros((g.num_edges(), 2))
     test_loader = dgl.dataloading.DataLoader(
@@ -195,4 +198,6 @@ for level in range(args.levels):
         drop_last=False,
         num_workers=args.num_workers,
     )
+write_pred_rttm(global_pred_labels)
+#if we just need the pred_rttm file we do not need to use this evaluation
 evaluation(global_pred_labels, global_labels, args.metrics)
