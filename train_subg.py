@@ -79,6 +79,7 @@ for k, l in zip(k_list, lvl_list):
     ks += [k for g in dataset.gs]
     nbrs += [nbr for nbr in dataset.nbrs]  # neighbours
 
+print("Num graphs = %d"%(len(gs)))
 print("Dataset Prepared.")
 
 

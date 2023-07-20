@@ -89,9 +89,9 @@ def evaluation(pred_labels, labels, metrics):
 #     for label, seg_start, seg_end in zip(out_labels, starts, ends):
 #         fp.write(f'SPEAKER {file_name} 1 {seg_start:03f} {seg_end - seg_start:03f} '
 #                  f'<NA> <NA> {label + 1} <NA> <NA>{os.linesep}')
-def write_pred_rttm(pred_labels):
-    input_file = "data/ALLIES/segment/19981207.0700.inter_fm_dga.seg"
-    output_file = "data/ALLIES/rttm_pred/19981207.0700.inter_fm_dga.rttm"
+def write_pred_rttm(pred_labels, input_file, output_file):
+    # input_file = "data/ALLIES/segment/19981207.0700.inter_fm_dga.seg"
+    # output_file = "data/ALLIES/rttm_pred/19981207.0700.inter_fm_dga.rttm"
     # 读取文件
     df = pd.read_csv(input_file, sep='\s+', header=None)
     # 获取文件名（去除后缀）

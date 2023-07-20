@@ -18,6 +18,8 @@ parser = argparse.ArgumentParser()
 
 # Dataset
 parser.add_argument("--data_path", type=str, required=True)
+parser.add_argument("--seg_path", type=str, required=True)
+parser.add_argument("--rttm_pred_path", type=str, required=True)
 parser.add_argument("--model_filename", type=str, default="lander.pth")
 parser.add_argument("--faiss_gpu", action="store_true")
 parser.add_argument("--num_workers", type=int, default=0)
@@ -198,6 +200,6 @@ for level in range(args.levels):
         drop_last=False,
         num_workers=args.num_workers,
     )
-write_pred_rttm(global_pred_labels)
+write_pred_rttm(global_pred_labels, args.seg_path, args.rttm_pred_path)
 #if we just need the pred_rttm file we do not need to use this evaluation
 evaluation(global_pred_labels, global_labels, args.metrics)
