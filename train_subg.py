@@ -80,11 +80,15 @@ for k, l in zip(k_list, lvl_list):
     nbrs += [nbr for nbr in dataset.nbrs]  # neighbours
 
 print("Num graphs = %d"%(len(gs)))
-print("Dataset Prepared.")
+for idx, graph in enumerate(gs):
+    num_nodes = graph.number_of_nodes()
+    num_edges = graph.number_of_edges()
+    print("Graph {}:".format(idx),flush=True)
+    print("Number of nodes:", num_nodes, flush=True)
+    print("Number of edges:", num_edges, flush=True)
+    print()
 
-
-# exit()  ## for debug
-
+print("Dataset Prepared.", flush=True)
 
 def set_train_sampler_loader(g, k):
     fanouts = [k - 1 for i in range(args.num_conv + 1)]
@@ -103,12 +107,14 @@ def set_train_sampler_loader(g, k):
 
 
 train_loaders = []
+#遍历
 for gidx, g in enumerate(gs):
     train_dataloader = set_train_sampler_loader(gs[gidx], ks[gidx])
     train_loaders.append(train_dataloader)
 
 ##################
 # Model Definition
+torch.cuda.manual_seed(940105) # add by Allen Zhang 24/07/2023
 feature_dim = gs[0].ndata["features"].shape[1]
 model = LANDER(
     feature_dim=feature_dim,
@@ -137,6 +143,8 @@ opt = optim.SGD(
 num_batch_per_loader = len(train_loaders[0])
 train_loaders = [iter(train_loader) for train_loader in train_loaders]
 num_loaders = len(train_loaders)
+
+print("num_batch_per_loader, train_loaders, num_loaders: ", num_batch_per_loader, train_loaders, num_loaders)
 scheduler = optim.lr_scheduler.CosineAnnealingLR(
     opt, T_max=args.epochs * num_batch_per_loader * num_loaders, eta_min=1e-5
 )

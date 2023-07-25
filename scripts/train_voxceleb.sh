@@ -1,1 +1,13 @@
-python train_subg.py --data_path data/VoxCeleb/split/voceleb_split2.pkl --model_filename checkpoint/voxceleb_sampler6.pth --knn_k 30,10,5 --levels 2,3 --faiss_gpu --hidden 256 --epochs 100 --lr 0.01 --batch_size 2048 --num_conv 1 --balance  --gat
+python train_subg.py \
+--data_path data/VoxCeleb/voxceleb.pkl \
+--model_filename checkpoint/voxceleb_sampler6.pth \
+--knn_k 10 \
+--levels 3 \
+--faiss_gpu \
+--hidden 256 \
+--epochs 100 \
+--lr 0.01 \
+--batch_size 2048 \
+--num_conv 1 \
+--balance  \
+--gat

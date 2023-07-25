@@ -68,6 +68,7 @@ lvl_list = [int(l) for l in args.levels.split(",")]  # levels [2, 3, 4]
 gs = []
 nbrs = []
 ks = []
+# dataset preparation includes creating ground truth graph levels for different level list with different knn
 for k, l in zip(k_list, lvl_list):
     dataset = LanderDataset(
         features=features,

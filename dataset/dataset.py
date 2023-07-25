@@ -46,6 +46,7 @@ class LanderDataset(object):
 
         # Recursive graph construction
         for lvl in range(self.levels):
+            #下一轮节点数量小于k的时候循环结束
             if features.shape[0] <= self.k:
                 self.levels = lvl
                 break
