@@ -33,9 +33,9 @@ for data_file_path in $data_dir*.pkl; do
         --data_path $data_file_path \
         --seg_path $seg_file_path \
         --rttm_pred_path $rttm_file_path \
-        --model_filename checkpoint/voxceleb_split_200_level2.pth \
-        --knn_k 8 \
-        --tau 0.6 \
+        --model_filename checkpoint/voxceleb_split_200_10_2_n.pth \
+        --knn_k 10 \
+        --tau 0.5 \
         --level 2 \
         --threshold prob \
         --faiss_gpu \

@@ -1,13 +1,13 @@
 python train_subg_split200.py \
 --data_path data/VoxCeleb/split/split200/ \
---model_filename checkpoint/voxceleb_split_200_5.pth \
---knn_k 15 \
+--model_filename checkpoint/voxceleb_split_200_5_n.pth \
+--knn_k 10 \
 --levels 2 \
 --faiss_gpu \
 --hidden 256 \
---epochs 200 \
+--epochs 10 \
 --lr 0.01 \
---batch_size 64 \
+--batch_size 1024 \
 --num_conv 1 \
 --balance  \
 --use_cluster_feat

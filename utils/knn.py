@@ -94,6 +94,7 @@ def build_knns(feats, k, knn_method, dump=True):
                 )
             )
         knns = index.get_knns()
+
     return knns
 
 
@@ -155,11 +156,26 @@ class knn_faiss(knn):
         self.verbose = verbose
         with Timer("[faiss] build index", verbose):
             feats = feats.astype("float32")
+
             size, dim = feats.shape
+            print("Size, dim: --------knn.py line162--------",size, dim)
             index = faiss.IndexFlatIP(dim)
             index.add(feats)
+
+            # quantizer = faiss.IndexFlatIP(dim)
+            # index = faiss.IndexIVFFlat(quantizer, dim, int(np.sqrt(size)),
+            #                            faiss.METRIC_INNER_PRODUCT)  # 利用IVFFLat提升效率
+            # train_vectors = feats[:int(size / 2)].copy()
+            # faiss.normalize_L2(train_vectors)
+            # index.train(train_vectors)
+            # faiss.normalize_L2(feats)
+            # index.add(feats)
         with Timer("[faiss] query topk {}".format(k), verbose):
             sims, nbrs = index.search(feats, k=k)
+            # from SHARC BY ALLEN ZHANG
+            # if np.min(sims) < 0:
+            #     sims = (sims - np.min(sims)) / (np.max(sims) - np.min(sims))
+            #-------------------
             self.knns = [
                 (
                     np.array(nbr, dtype=np.int32),
@@ -191,7 +207,12 @@ class knn_faiss_gpu(knn):
                 sort=sort,
                 verbose=verbose,
             )
-
+            print("dists, nbrs:",dists.shape, nbrs.shape)
+            # FROM SHARC BY ALLEN ZHANG
+            # sims = 1 - dists
+            # if np.min(sims) < 0:
+            #     sims = (sims - np.min(sims)) / (np.max(sims) - np.min(sims))
+            #-------------------------
             self.knns = [
                 (
                     np.array(nbr, dtype=np.int32),

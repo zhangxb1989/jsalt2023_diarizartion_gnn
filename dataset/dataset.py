@@ -51,8 +51,10 @@ class LanderDataset(object):
                 self.levels = lvl
                 break
             if faiss_gpu:
+                print("faiss_gpu in using -----dataset.py, line 54")
                 knns = build_knns(features, self.k, "faiss_gpu")
             else:
+                print("faiss_cpu in using -----dataset.py, line 57")
                 knns = build_knns(features, self.k, "faiss")
             dists, nbrs = knns2ordered_nbrs(knns)
             self.nbrs.append(nbrs)
@@ -95,6 +97,7 @@ class LanderDataset(object):
             )
 
     def _build_graph(self, features, cluster_features, labels, density, knns):
+        #adj = fast_knns2spmat(knns, self.k, 0, False)
         adj = fast_knns2spmat(knns, self.k)
         adj, adj_row_sum = row_normalize(adj)
         indices, values, shape = sparse_mx_to_indices_values(adj)

@@ -17,7 +17,7 @@ parser = argparse.ArgumentParser()
 
 # Dataset
 parser.add_argument("--data_path", type=str, required=True)
-parser.add_argument("--num_subsets", type=int, default=5)
+parser.add_argument("--num_subsets", type=int, default=2)
 parser.add_argument("--levels", type=str, default="1")
 parser.add_argument("--faiss_gpu", action="store_true")
 parser.add_argument("--model_filename", type=str, default="lander.pth")
@@ -58,9 +58,6 @@ else:
 
 ##################
 # Data Preparation
-# gs_list = []
-# nbrs_list = []
-# ks_list = []
 
 gs = []
 nbrs = []
@@ -71,6 +68,11 @@ for subset_id in range(1, args.num_subsets + 1):
     subset_file = os.path.join(args.data_path,  f"voceleb_30_speakers_split{subset_id}.pkl")
     with open(subset_file, "rb") as f:
         subset_features, subset_labels = pickle.load(f)
+    #print("subset_features", subset_features, flush=True)
+    # normalize the subset_features
+    normalized_subset_features = subset_features
+    #subset_features / np.linalg.norm(subset_features, axis=1, keepdims=True)
+    #print("normalized_subset_features",normalized_subset_features, flush=True)
 
     k_list = [int(k) for k in args.knn_k.split(",")]  # knn [10, 5, 3]
     lvl_list = [int(l) for l in args.levels.split(",")]  # levels [2, 3, 4]
@@ -79,7 +81,7 @@ for subset_id in range(1, args.num_subsets + 1):
     for k, l in zip(k_list, lvl_list):
         print("k,l:", k, l)
         dataset = LanderDataset(
-            features=subset_features,
+            features=normalized_subset_features,
             labels=subset_labels,
             k=k,
             levels=l,
@@ -89,9 +91,6 @@ for subset_id in range(1, args.num_subsets + 1):
         ks += [k for g in dataset.gs]
         nbrs += [nbr for nbr in dataset.nbrs]  # neighbours
 
-    # gs_list.append(gs)
-    # nbrs_list.append(nbrs)
-    # ks_list.append(ks)
 print("Num graphs = %d"%(len(gs)))
 for idx, graph in enumerate(gs):
     num_nodes = graph.number_of_nodes()
@@ -99,22 +98,9 @@ for idx, graph in enumerate(gs):
     print("Graph {}:".format(idx),flush=True)
     print("Number of nodes:", num_nodes, flush=True)
     print("Number of edges:", num_edges, flush=True)
-    print()
-
-# print("Num graphs in each subset:", [len(gs) for gs in gs_list])
-# for subset_id, gs in enumerate(gs_list):
-#     for idx, graph in enumerate(gs):
-#         num_nodes = graph.number_of_nodes()
-#         num_edges = graph.number_of_edges()
-#         print(f"Subset {subset_id}, Graph {idx}:")
-#         print("Number of nodes:", num_nodes)
-#         print("Number of edges:", num_edges)
-#         print()
 
 print("Dataset Prepared.", flush=True)
 
-
-#exit()  ## for debug
 
 def set_train_sampler_loader(g, k):
     fanouts = [k - 1 for i in range(args.num_conv + 1)]
@@ -171,8 +157,30 @@ opt = optim.SGD(
 
 # keep num_batch_per_loader the same for every sub_dataloader
 num_batch_per_loader = len(train_loaders[0])
+# print("len train_loader[]:", len(train_loaders[0]))
+# print("len train_loader[]:", len(train_loaders[1]))
+# print("len train_loader[]:", len(train_loaders[2]))
+# print("len train_loader[]:", len(train_loaders[3]))
+# for batch_data in iter(train_loaders[0]):
+#     # # 从 train_loader 获取一个批次的数据
+#     # batch_data = next(iter(train_loaders[0]))
+#     # 获取批次数据中的节点、子图和边关系数据
+#     input_nodes, sub_g, bipartites = batch_data
+#     # 查看数据的内容
+#     print("Input Nodes:", input_nodes)
+#     print("Subgraph:", sub_g)
+#     print("Bipartites:", bipartites)
+#
+# for block in bipartites:
+#     num_src_nodes = block.num_src_nodes()
+#     num_dst_nodes = block.num_dst_nodes()
+#     print("Number of Source Nodes:", num_src_nodes)
+#     print("Number of Destination Nodes:", num_dst_nodes)
+
 train_loaders = [iter(train_loader) for train_loader in train_loaders]
 num_loaders = len(train_loaders)
+# print("len train_loader[]:", len(list(train_loaders[0])))
+
 # train_loaders = []
 # for subset_id in range(args.num_subsets):
 #     train_loaders.append(iter(dgl.dataloading.MultiLayerNeighborSampler([k - 1 for i in range(args.num_conv + 1)]).dataloader(gs_list[subset_id], torch.arange(gs_list[subset_id][0].number_of_nodes()), batch_size=args.batch_size, shuffle=True, drop_last=False, num_workers=args.num_workers)))
@@ -180,6 +188,8 @@ num_loaders = len(train_loaders)
 # num_loaders = len(train_loaders)
 
 print("num_batch_per_loader, train_loaders, num_loaders: ", num_batch_per_loader, train_loaders, num_loaders)
+
+#exit()
 
 scheduler = optim.lr_scheduler.CosineAnnealingLR(
     opt, T_max=args.epochs * num_batch_per_loader * num_loaders, eta_min=1e-5
@@ -193,15 +203,29 @@ for epoch in range(args.epochs):
     loss_den_val_total = []
     loss_conn_val_total = []
     loss_val_total = []
-    for batch in range(num_batch_per_loader):
-        for loader_id in range(num_loaders):
+
+    # different from the previous order by ALLEN ZHANG 07/28 2023
+    for loader_id in range(num_loaders):
+        for batch in range(num_batch_per_loader):
             try:
                 minibatch = next(train_loaders[loader_id])
+                input_nodes, sub_g, bipartites = minibatch
+                # 查看数据的内容
+                print("batch, loader id:", batch, loader_id)
+                # print("Input Nodes:", input_nodes)
+                # print("Subgraph:", sub_g)
+                # print("Bipartites:", bipartites)
             except:
                 train_loaders[loader_id] = iter(
                     set_train_sampler_loader(gs[loader_id], ks[loader_id])
                 )
                 minibatch = next(train_loaders[loader_id])
+                input_nodes, sub_g, bipartites = minibatch
+                # 查看数据的内容
+                print("except batch, loader id:", batch, loader_id)
+                # print("except Input Nodes:", input_nodes)
+                # print("except Subgraph:", sub_g)
+                # print("except Bipartites:", bipartites)
             input_nodes, sub_g, bipartites = minibatch
             sub_g = sub_g.to(device)
             bipartites = [b.to(device) for b in bipartites]

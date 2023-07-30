@@ -60,9 +60,11 @@ else:
 # Data Preparation
 with open(args.data_path, "rb") as f:
     features, labels = pickle.load(f)
-global_features = features.copy()
+#normalization added by allen zhang
+normalized_features = features #/ np.linalg.norm(features, axis=1, keepdims=True)
+global_features = normalized_features.copy()
 dataset = LanderDataset(
-    features=features,
+    features=normalized_features,
     labels=labels,
     k=args.knn_k,
     levels=1,
@@ -170,7 +172,7 @@ for level in range(args.levels):
 
     # build new dataset
     features, labels, cluster_features = build_next_level(
-        features,
+        normalized_features,
         labels,
         peaks,
         global_features,

@@ -55,6 +55,7 @@ def set_random_seed(seed, cuda=False):
 
 def l2norm(vec):
     vec /= np.linalg.norm(vec, axis=1).reshape(-1, 1)
+    #vec /= np.linalg.norm(vec, axis=1, keepdims=True)
     return vec
 
 
