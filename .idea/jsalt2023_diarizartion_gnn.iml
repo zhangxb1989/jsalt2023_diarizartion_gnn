@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="PYTHON_MODULE" version="4">
   <component name="NewModuleRootManager">
-    <content url="file://$MODULE_DIR$" />
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/checkpoint/backup" />
+      <excludeFolder url="file://$MODULE_DIR$/data/ALLIES/embeddings" />
+      <excludeFolder url="file://$MODULE_DIR$/data/ALLIES/label_pred" />
+      <excludeFolder url="file://$MODULE_DIR$/data/DIHARD_NO_VAD/embeddings" />
+      <excludeFolder url="file://$MODULE_DIR$/data/DIHARD_NO_VAD/label_pred" />
+      <excludeFolder url="file://$MODULE_DIR$/data/DIHARD_NO_VAD/rttm_pred" />
+      <excludeFolder url="file://$MODULE_DIR$/data/VoxCeleb/dev_acc" />
+      <excludeFolder url="file://$MODULE_DIR$/data/VoxCeleb/split" />
+      <excludeFolder url="file://$MODULE_DIR$/data/HiLander" />
+    </content>
     <orderEntry type="jdk" jdkName="Python 3.7.0 WSL (Ubuntu-20.04): (/home/allen/anaconda3/envs/Hilander/bin/python3.7)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
