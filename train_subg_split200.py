@@ -1,6 +1,7 @@
 import argparse
 import os
 import pickle
+import random
 import time
 
 import dgl
@@ -17,7 +18,7 @@ parser = argparse.ArgumentParser()
 
 # Dataset
 parser.add_argument("--data_path", type=str, required=True)
-parser.add_argument("--num_subsets", type=int, default=2)
+parser.add_argument("--num_subsets", type=int, default=20)
 parser.add_argument("--levels", type=str, default="1")
 parser.add_argument("--faiss_gpu", action="store_true")
 parser.add_argument("--model_filename", type=str, default="lander.pth")
@@ -65,7 +66,10 @@ ks = []
 
 for subset_id in range(1, args.num_subsets + 1):
     print("Subset_id: ", subset_id)
-    subset_file = os.path.join(args.data_path,  f"voceleb_30_speakers_split{subset_id}.pkl")
+    # 30 speakers 200 subsets
+    # subset_file = os.path.join(args.data_path,  f"voceleb_30_speakers_split{subset_id}.pkl")
+    # 300 speakers 20 subsets
+    subset_file = os.path.join(args.data_path, f"voceleb_split{subset_id}.pkl")
     with open(subset_file, "rb") as f:
         subset_features, subset_labels = pickle.load(f)
     #print("subset_features", subset_features, flush=True)
@@ -203,15 +207,16 @@ for epoch in range(args.epochs):
     loss_den_val_total = []
     loss_conn_val_total = []
     loss_val_total = []
+    random.shuffle(train_loaders)
 
     # different from the previous order by ALLEN ZHANG 07/28 2023
-    for loader_id in range(num_loaders):
-        for batch in range(num_batch_per_loader):
+    for batch in range(num_batch_per_loader):
+        for loader_id in range(num_loaders):
             try:
                 minibatch = next(train_loaders[loader_id])
                 input_nodes, sub_g, bipartites = minibatch
                 # 查看数据的内容
-                print("batch, loader id:", batch, loader_id)
+                #print("batch, loader id:", batch, loader_id)
                 # print("Input Nodes:", input_nodes)
                 # print("Subgraph:", sub_g)
                 # print("Bipartites:", bipartites)
@@ -222,7 +227,7 @@ for epoch in range(args.epochs):
                 minibatch = next(train_loaders[loader_id])
                 input_nodes, sub_g, bipartites = minibatch
                 # 查看数据的内容
-                print("except batch, loader id:", batch, loader_id)
+                #print("except batch, loader id:", batch, loader_id)
                 # print("except Input Nodes:", input_nodes)
                 # print("except Subgraph:", sub_g)
                 # print("except Bipartites:", bipartites)

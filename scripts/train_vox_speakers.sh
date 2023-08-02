@@ -1,11 +1,11 @@
 python train_subg_speakers.py \
 --data_path data/VoxCeleb/split/speakers5994/ \
---model_filename checkpoint/voxceleb_speakers5994_150.pth \
+--model_filename checkpoint/vox/vox5994/voxceleb_speakers5994_150.pth \
 --knn_k 10 \
 --levels 2 \
 --faiss_gpu \
 --hidden 256 \
---epochs 100 \
+--epochs 20 \
 --lr 0.01 \
 --batch_size 1024 \
 --num_conv 1 \

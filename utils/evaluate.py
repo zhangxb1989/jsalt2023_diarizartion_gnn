@@ -3,6 +3,7 @@
 
 import argparse
 import inspect
+import json
 import os
 import pandas as pd
 import numpy as np
@@ -110,3 +111,21 @@ def write_pred_rttm(pred_labels, input_file, output_file):
     new_df['NA4'] = ['<NA>'] * len(df)
     # 输出到新文件
     new_df.to_csv(output_file, sep=' ', index=False, header=None)
+    # Create pred_labels_file based on output_file
+    base_dir = os.path.dirname(output_file)
+    base_name = os.path.splitext(os.path.basename(output_file))[0]
+    pred_labels_file = os.path.join(base_dir.replace('rttm_pred', 'label_pred'), f"{base_name}.lst")
+
+    # 将 ndarray 转换为 list
+    if isinstance(pred_labels, np.ndarray):
+        pred_labels = pred_labels.tolist()
+
+    # 追加pred_labels到新文件
+    with open(pred_labels_file, 'w') as f:
+        f.write(json.dumps(pred_labels) + "\n")
+
+
+
+
+
+

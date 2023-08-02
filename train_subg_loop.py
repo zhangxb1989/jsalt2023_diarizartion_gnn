@@ -1,6 +1,7 @@
 import argparse
 import os
 import pickle
+import random
 import time
 
 import dgl
@@ -161,6 +162,7 @@ for epoch in range(args.epochs):
     loss_den_val_total = []
     loss_conn_val_total = []
     loss_val_total = []
+    random.shuffle(train_loaders)
     for batch in range(num_batch_per_loader):
         for loader_id in range(num_loaders):
             try:

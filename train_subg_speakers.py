@@ -146,7 +146,7 @@ def print_graph_info(gs_i):
 
 
 def set_train_sampler_loader(g_l, k_l):
-    fanouts = [k_l - 1 for i in range(args.num_conv + 1)]
+    fanouts = [k_l - 1 for i in range(args.num_conv + 1)]#对于某个节点的k个最近邻居来讲，他自身也是最近的邻居之一，所以实际上只有k-1个邻居
     # print("fanouts:", fanouts)
     sampler = dgl.dataloading.MultiLayerNeighborSampler(fanouts)
     # fix the number of edges
@@ -216,6 +216,19 @@ def train_epoch(epoch_t, gs_t, ks_t):
                     loss_conn_val,
                 )
             )
+            print(
+                "epoch: %d, batch: %d / %d, loader_id : %d / %d, loss: %.6f, loss_den: %.6f, loss_conn: %.6f"
+                % (
+                    epoch_t,
+                    batch,
+                    len(train_loaders_list[epoch][loaders]),
+                    loaders,
+                    len(train_loaders_list[epoch]),
+                    np.array(loss_val_total).mean(),
+                    np.array(loss_den_val_total).mean(),
+                    np.array(loss_conn_val_total).mean(),
+                )
+            )
             scheduler.step()
     print(
         "epoch: %d, loss: %.6f, loss_den: %.6f, loss_conn: %.6f"
@@ -227,6 +240,7 @@ def train_epoch(epoch_t, gs_t, ks_t):
         )
     )
     torch.save(model.state_dict(), args.model_filename)
+    torch.save(model.state_dict(), f'{args.model_filename}_epoch_{epoch}.pt')
 
 
 def val(epoch_v, model_v):

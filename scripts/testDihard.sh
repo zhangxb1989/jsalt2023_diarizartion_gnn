@@ -1,9 +1,9 @@
 #!/bin/bash
 
-data_dir="data/ALLIES/embeddings/pkl/"
-seg_dir="data/ALLIES/segment/"
-rttm_dir="data/ALLIES/rttm_pred/"
-rttm_gt_dir="data/ALLIES/rttm_gt/"
+data_dir="data/DIHARD_NO_VAD/embeddings/"
+seg_dir="data/DIHARD_NO_VAD/segment/"
+rttm_dir="data/DIHARD_NO_VAD/rttm_pred/"
+rttm_gt_dir="data/DIHARD_NO_VAD/rttm_gt/"
 
 # 获取开始时间
 start_time=$(date +%s)
@@ -14,7 +14,7 @@ for data_file_path in $data_dir*.pkl; do
     data_file_name=$(basename "$data_file_path")
 
     # 提取对应的 seg 文件名
-    seg_file_name="${data_file_name%.pkl}.seg"
+    seg_file_name="${data_file_name%.pkl}"
 
     # 提取对应的 rttm_pred 文件名
     rttm_file_name="${data_file_name%.pkl}.rttm"
@@ -34,7 +34,7 @@ for data_file_path in $data_dir*.pkl; do
         --seg_path $seg_file_path \
         --rttm_pred_path $rttm_file_path \
         --model_filename checkpoint/voxceleb_split_200_10_2_n_s.pth \
-        --knn_k 10 \
+        --knn_k 8 \
         --tau 0.5 \
         --level 2 \
         --threshold prob \
@@ -56,6 +56,7 @@ for data_file_path in $data_dir*.pkl; do
 
     # 打印当前循环执行时间
     echo "执行脚本 $data_file_name 完成，耗时：$loop_duration 秒"
+    #break #for test only one file
 done
 
 # 获取 rttm_dir 目录下的所有文件名
