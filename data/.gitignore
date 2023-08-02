@@ -1,4 +1,0 @@
-# ignore pkl data files
-*.pkl
-*.ark
-*.h5
